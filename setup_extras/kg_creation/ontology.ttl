@@ -1,0 +1,93 @@
+@prefix ex:        <http://example.org/> .
+@prefix schema:    <https://schema.org/> .
+@prefix geo:       <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix geosparql: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf:        <http://www.opengis.net/ont/sf#> .
+@prefix rdfs:      <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:       <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl:       <http://www.w3.org/2002/07/owl#> .
+
+### ------------------------------------------------------------------
+### Classes (reuse schema.org)
+###   schema:Restaurant
+###   schema:CafeOrCoffeeShop
+###   schema:BarOrPub
+###   schema:OpeningHoursSpecification
+###   schema:Place (for HQ, neighborhoods, POIs, etc.)
+### ------------------------------------------------------------------
+
+### ------------------------------------------------------------------
+### New object property for location/containment
+### ------------------------------------------------------------------
+ex:locatedIn a owl:ObjectProperty , owl:TransitiveProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range  schema:Place ;
+  rdfs:label "located in"@en ;
+  rdfs:comment "Generic containment/administrative location relation (POI → neighborhood → city)."@en .
+
+### ------------------------------------------------------------------
+### City node (top of the containment chain)
+### ------------------------------------------------------------------
+ex:Athens a schema:Place ;
+  rdfs:label "Athens"@en ;
+  geosparql:hasGeometry [
+    a sf:Point ;
+    geosparql:asWKT "POINT(23.727539 37.983810)"^^geosparql:wktLiteral
+  ] .
+
+### ------------------------------------------------------------------
+### Custom Datatype Properties (convenience for your POIs)
+### ------------------------------------------------------------------
+ex:averagePricePerPerson a rdfs:DatatypeProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range xsd:decimal ;
+  rdfs:label "average price per person (EUR)"@en .
+
+ex:hasOutdoorSeating a rdfs:DatatypeProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range xsd:boolean ;
+  rdfs:label "has outdoor seating"@en .
+
+ex:hasWifi a rdfs:DatatypeProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range xsd:boolean ;
+  rdfs:label "has Wi-Fi"@en .
+
+ex:veggieFriendly a rdfs:DatatypeProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range xsd:boolean ;
+  rdfs:label "vegetarian/vegan friendly"@en .
+
+ex:noiseLevel a rdfs:DatatypeProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range xsd:string ;
+  rdfs:label "noise level"@en ;
+  rdfs:comment "Values like 'quiet' | 'moderate' | 'loud'."@en .
+
+ex:accessibility a rdfs:DatatypeProperty ;
+  rdfs:domain schema:Place ;
+  rdfs:range xsd:string ;
+  rdfs:label "accessibility"@en ;
+  rdfs:comment "E.g., 'wheelchair' | 'limited' | 'unknown'."@en .
+
+### ------------------------------------------------------------------
+### Reused / Not redefined:
+###   schema:acceptsReservations (xsd:boolean)
+###   schema:menu (URL string or IRI)
+###   schema:aggregateRating (or your ex:avgRating literal)
+###   schema:servesAlcohol (xsd:boolean)
+###   schema:paymentAccepted (string)
+###   geo:lat / geo:long (xsd:decimal)
+###   geosparql:hasGeometry / geosparql:asWKT
+### ------------------------------------------------------------------
+
+### ------------------------------------------------------------------
+### Company HQ anchor (example)
+### ------------------------------------------------------------------
+ex:HQ a schema:Place ;
+  rdfs:label "Company HQ (Syntagma)"@en ;
+  geosparql:hasGeometry [
+    a sf:Point ;
+    geosparql:asWKT "POINT(23.7347 37.9755)"^^geosparql:wktLiteral
+  ] ;
+  ex:locatedIn ex:Athens .

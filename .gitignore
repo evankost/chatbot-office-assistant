@@ -1,0 +1,13 @@
+# secrets
+.env
+
+# Python caches & bytecode
+__pycache__/
+
+# Virtual envs 
+.venv/
+venv/
+
+# IDE noise 
+.vscode/
+

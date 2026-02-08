@@ -1,0 +1,38 @@
+SillyTavern — Integration
+=========================
+
+Use SillyTavern as the chat UI for your **local Office Assistant**. The Flask middleware
+exposes an **OpenAI-compatible endpoint** and orchestrates routing, linguistic analysis,
+user modeling, and KG/DB calls behind the scenes. Option A (below) keeps all features;
+Option B is basic chat only.
+
+Prerequisites
+-------------
+• SillyTavern: https://github.com/SillyTavern/SillyTavern
+  (Windows: Start.bat; macOS/Linux: follow README)
+• KoboldCPP services running:
+  – Main chat @ http://localhost:5001
+  – SPARQL gen @ http://localhost:5002
+  – Text-to-SQL @ http://localhost:5003
+• Flask middleware (OpenAI-compatible):
+  Should show: http://localhost:5100/v1/chat/completions
+• Tip: Ensure ports match your config.py.
+
+Option A — Use the middleware (recommended)
+-------------------------------------------
+Preserves **linguistic analysis**, **user modeling**, **KG/DB queries**, and **streaming**.
+
+1) SillyTavern → Settings → API Connections
+2) Provider: OpenAI / Compatible
+3) Base URL: http://localhost:5100/v1
+4) API Key: any non-empty string (e.g., sk-local-123)
+5) Model name: anything (e.g., openhermes) — middleware ignores it
+6) Enable Chat Completions and Streaming
+7) Do NOT set a global System Prompt in SillyTavern (middleware injects its own)
+
+Option B — Direct to KoboldCPP (basic chat only)
+------------------------------------------------
+Provider: OpenAI-compatible (or KoboldAI/KoboldCPP)
+Base URL: http://localhost:5001/v1
+Note: No KG/DB features, routing, or etiquette policies — useful for quick tests.
+

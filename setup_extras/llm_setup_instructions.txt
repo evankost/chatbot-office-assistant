@@ -1,0 +1,68 @@
+Office Assistant Chatbot — Local LLM Setup (KoboldCPP)
+===============================================================
+
+This guide starts the three local LLM services used by the middleware. 
+It includes direct download links for suitable GGUF checkpoints and the
+exact launch commands (Windows, PowerShell/CMD with line continuations).
+
+Prerequisites
+-------------
+1) Download KoboldCPP (Windows build) from GitHub:
+   https://github.com/LostRuins/koboldcpp
+
+2) Create a folder for the model files, e.g.:
+   koboldcpp-concedo\
+
+Model downloads
+---------------
+A) Main chat model — OpenHermes 2.5 (Mistral 7B, GGUF)
+   • Hugging Face (GGUF quantizations by TheBloke):
+     https://huggingface.co/TheBloke/OpenHermes-2.5-Mistral-7B-GGUF
+   • Recommended file: openhermes-2.5-mistral-7b.Q4_K_M.gguf
+   • Place at: koboldcpp-concedo\openhermes-2.5-mistral-7b.Q4_K_M.gguf
+
+B) SPARQL generator — Qwen 2.5 3B Instruct (GGUF)
+   • Hugging Face (official GGUF):
+     https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF
+   • Example file name: Qwen2.5-3B-Instruct-Q4_K_M.gguf
+   • Place at: koboldcpp-concedo\Qwen2.5-3B-Instruct-Q4_K_M.gguf
+
+C) Text‑to‑SQL model — GPT‑2 Medium (GGUF, community)
+   • Hugging Face:
+     https://huggingface.co/jdumanski/gpt2-medium-Q4_K_M-GGUF
+   • Example file name: gpt2-medium.Q4_K_M.gguf
+   • Place at: koboldcpp-concedo\gpt2-medium.Q4_K_M.gguf
+   • (If you have a domain‑tuned text‑to‑SQL GGUF, use that instead and adjust the --model path.)
+
+Launch commands (Windows)
+-------------------------
+:: Main chat — OpenHermes 2.5 @5001 (GPU-accelerated if available)
+koboldcpp.exe ^
+  --model "koboldcpp-concedo\openhermes-2.5-mistral-7b.Q4_K_M.gguf" ^
+  --port 5001 ^
+  --chatcompletionsadapter AutoGuess ^
+  --gpulayers 15 ^
+  --usecublas normal 0
+
+:: SPARQL generator — Qwen 2.5 3B Instruct (CPU mode) @5002
+koboldcpp.exe ^
+  --model "koboldcpp-concedo\Qwen2.5-3B-Instruct-Q4_K_M.gguf" ^
+  --port 5002 ^
+  --chatcompletionsadapter AutoGuess ^
+  --usecpu
+
+:: Text-to-SQL — GPT-2 Medium (CPU mode) @5003
+koboldcpp.exe ^
+  --model "koboldcpp-concedo\gpt2-medium.Q4_K_M.gguf" ^
+  --port 5003 ^
+  --chatcompletionsadapter AutoGuess ^
+  --usecpu
+
+Notes & tips
+------------
+• Ports must match your config (e.g., 5001/5002/5003).
+• If your model file names differ, keep the folder path but update --model accordingly.
+• For NVIDIA GPUs on Windows, --usecublas is typically the simplest acceleration flag.
+• If a model fails to load due to context size, try launching with a smaller --ctxsize (e.g., 2048).
+• You can run the last two models on CPU to save VRAM, as shown above.
+
